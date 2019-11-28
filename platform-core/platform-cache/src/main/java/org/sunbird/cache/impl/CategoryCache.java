@@ -8,7 +8,8 @@ import java.util.List;
 public class CategoryCache extends RedisCacheManager {
 
     public CategoryCache(){
-        handler = new CategoryCacheHandler();
+
+        //handler = new CategoryCacheHandler();
     }
 
     @Override

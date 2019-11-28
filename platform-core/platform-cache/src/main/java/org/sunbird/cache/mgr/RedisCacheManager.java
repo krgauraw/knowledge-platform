@@ -2,9 +2,11 @@ package org.sunbird.cache.mgr;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.sunbird.cache.common.CacheErrorCode;
 import org.sunbird.cache.common.CacheHandlerOperation;
 import org.sunbird.cache.handler.ICacheHandler;
 import org.sunbird.cache.util.RedisCacheUtil;
+import org.sunbird.common.exception.ClientException;
 import org.sunbird.common.exception.ResourceNotFoundException;
 import org.sunbird.telemetry.logger.TelemetryManager;
 
@@ -39,8 +41,9 @@ public abstract class RedisCacheManager implements ICacheManager {
     protected List<String> getListData(String cacheKey, String objectKey){
         try{
             List<String> data = RedisCacheUtil.getList(cacheKey);
-            if(CollectionUtils.isEmpty(data) && null!=handler){
-                data = (List<String>)handler.execute(CacheHandlerOperation.READ_LIST.name(),cacheKey,objectKey);
+            if(CollectionUtils.isEmpty(data) && null==handler){
+                throw new ClientException(CacheErrorCode.ERR_CACHE_GET_PROPERTY_ERROR.name(),"Data Not Found For Key : "+cacheKey);
+                //data = (List<String>)handler.execute(CacheHandlerOperation.READ_LIST.name(),cacheKey,objectKey);
             }
             return data;
         }catch(Exception e){
