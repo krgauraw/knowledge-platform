@@ -3,15 +3,13 @@ package org.sunbird.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.sunbird.common.Platform;
 import org.sunbird.graph.dac.model.Node;
 import org.sunbird.graph.dac.model.Relation;
 import org.sunbird.graph.schema.DefinitionNode;
 import scala.collection.JavaConversions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class NodeUtils {
@@ -23,14 +21,18 @@ public class NodeUtils {
      * @param fields
      * @return
      */
-    public static Map<String, Object> serialize(Node node, List<String> fields) {
+    public static Map<String, Object> serialize(Node node, List<String> fields, String schemaName) {
         Map<String, Object> metadataMap = node.getMetadata();
         metadataMap.put("identifier", node.getIdentifier());
+        List<String> languages = Arrays.asList( (String[]) node.getMetadata().get("language"));
+        List<String> languageCodes = new ArrayList<String>();
+        languageCodes.addAll(languages.stream().map(lang -> Platform.config.getConfig("languageCode").hasPath(lang.toLowerCase()) ? Platform.config.getConfig("languageCode").getString(lang.toLowerCase()) : "").collect(Collectors.toList()));
+        metadataMap.put("languageCode",languageCodes);
         if (CollectionUtils.isNotEmpty(fields))
             filterOutFields(metadataMap, fields);
-        List<String> jsonProps = JavaConversions.seqAsJavaList(DefinitionNode.fetchJsonProps(node.getGraphId(), "1.0", node.getObjectType()));
+        List<String> jsonProps = JavaConversions.seqAsJavaList(DefinitionNode.fetchJsonProps(node.getGraphId(), "1.0", schemaName));
         Map<String, Object> updatedMetadataMap = metadataMap.entrySet().stream().collect(Collectors.toMap(entry -> handleKeyNames(entry, fields), entry -> convertJsonProperties(entry, jsonProps)));
-        Map<String, Object> definitionMap = JavaConversions.mapAsJavaMap(DefinitionNode.getRelationDefinitionMap(node.getGraphId(), "1.0", node.getObjectType()));
+        Map<String, Object> definitionMap = JavaConversions.mapAsJavaMap(DefinitionNode.getRelationDefinitionMap(node.getGraphId(), "1.0", schemaName));
         getRelationMap(node, updatedMetadataMap, definitionMap);
         return updatedMetadataMap;
     }

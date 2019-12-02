@@ -25,7 +25,12 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class BaseSchemaValidator implements ISchemaValidator {
@@ -76,15 +81,17 @@ public abstract class BaseSchemaValidator implements ISchemaValidator {
     }
 
     public ValidationResult getStructuredData(Map<String, Object> input) {
-        input = cleanEmptyKeys(input);
         Map<String, Object> relations = getRelations(input);
         Map<String, Object> externalData = getExternalProps(input);
         return new ValidationResult(input, relations, externalData);
     }
 
     public ValidationResult validate(Map<String, Object> data) throws Exception {
+
         String dataWithDefaults = withDefaultValues(JsonUtils.serialize(data));
-        List<String> messages = validate(new StringReader(dataWithDefaults));
+        Map<String, Object> validationDataWithDefaults = cleanEmptyKeys(JsonUtils.deserialize(dataWithDefaults, Map.class));
+
+        List<String> messages = validate(new StringReader(JsonUtils.serialize(validationDataWithDefaults)));
         Map<String, Object> dataMap = JsonUtils.deserialize(dataWithDefaults, Map.class);
         Map<String, Object> externalData = getExternalProps(dataMap);
         Map<String, Object> relations = getRelations(dataMap);
@@ -94,7 +101,9 @@ public abstract class BaseSchemaValidator implements ISchemaValidator {
     private Map<String, Object> cleanEmptyKeys(Map<String, Object> input) {
         return input.entrySet().stream().filter(entry -> {
             Object value = entry.getValue();
-            if(value instanceof String) {
+            if(value == null){
+                return false;
+            }else if(value instanceof String) {
                 return StringUtils.isNotBlank((String) value);
             } else if (value instanceof List) {
                 return CollectionUtils.isNotEmpty((List) value);
@@ -128,8 +137,8 @@ public abstract class BaseSchemaValidator implements ISchemaValidator {
 
     private Map<String, Object> getExternalProps(Map<String, Object> input) {
         Map<String, Object> externalData = new HashMap<>();
-        if (config != null && config.hasPath("externalProperties")) {
-            Set<String> extProps = config.getObject("externalProperties").keySet();
+        if (config != null && config.hasPath("external.properties")) {
+            Set<String> extProps = config.getObject("external.properties").keySet();
             externalData = input.entrySet().stream().filter(f -> extProps.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             input.keySet().removeAll(extProps);
         }
