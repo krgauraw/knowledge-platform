@@ -64,8 +64,6 @@ public class RedisCacheUtil {
         }
     }
 
-    // TODO: always considering object as string. need to change this.
-
     /**
      * This method store/save list data into cache for given Key
      *  @param key

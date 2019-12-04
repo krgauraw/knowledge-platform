@@ -57,6 +57,13 @@
             <artifactId>jackson-databind</artifactId>
             <version>${fasterxml.jackson.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.sunbird</groupId>
+            <artifactId>unit-test</artifactId>
+            <type>test-jar</type>
+            <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
