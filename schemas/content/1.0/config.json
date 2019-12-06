@@ -3,13 +3,11 @@
         "create" : [
             "status", "dialcodes"
         ],
-        "update": [
-            "status", "identifier", "framework", "dialcodes", "code", "mimeType", "contentType", "channel"
-        ]
+        "update": []
     },
     "objectType": "Content",
     "external": {
-        "storeName": "content_store.content_data",
+        "tableName": "content_data",
         "properties": {
             "body": {
                 "type": "blob"
@@ -23,7 +21,7 @@
             "screenshots": {
                 "type": "blob"
             },
-            "last_update_on": {
+            "last_updated_on": {
                 "type": "timestamp"
             }
         },

@@ -23,17 +23,19 @@ public class NodeUtils {
      */
     public static Map<String, Object> serialize(Node node, List<String> fields, String schemaName) {
         Map<String, Object> metadataMap = node.getMetadata();
-        metadataMap.put("identifier", node.getIdentifier());
         List<String> languages = Arrays.asList( (String[]) node.getMetadata().get("language"));
         List<String> languageCodes = new ArrayList<String>();
         languageCodes.addAll(languages.stream().map(lang -> Platform.config.getConfig("languageCode").hasPath(lang.toLowerCase()) ? Platform.config.getConfig("languageCode").getString(lang.toLowerCase()) : "").collect(Collectors.toList()));
         metadataMap.put("languageCode",languageCodes);
         if (CollectionUtils.isNotEmpty(fields))
             filterOutFields(metadataMap, fields);
+        metadataMap.put("identifier", node.getIdentifier());
         List<String> jsonProps = JavaConversions.seqAsJavaList(DefinitionNode.fetchJsonProps(node.getGraphId(), "1.0", schemaName));
         Map<String, Object> updatedMetadataMap = metadataMap.entrySet().stream().collect(Collectors.toMap(entry -> handleKeyNames(entry, fields), entry -> convertJsonProperties(entry, jsonProps)));
         Map<String, Object> definitionMap = JavaConversions.mapAsJavaMap(DefinitionNode.getRelationDefinitionMap(node.getGraphId(), "1.0", schemaName));
-        getRelationMap(node, updatedMetadataMap, definitionMap);
+        if (CollectionUtils.isEmpty(fields) || definitionMap.keySet().stream().anyMatch(key -> fields.contains(key))) {
+            getRelationMap(node, updatedMetadataMap, definitionMap);
+        }
         return updatedMetadataMap;
     }
 
@@ -67,10 +69,13 @@ public class NodeUtils {
             if (relMap.containsKey(relationMap.get(rel.getRelationType() + "_in_" + rel.getStartNodeObjectType()))) {
                 relMap.get(relationMap.get(rel.getRelationType() + "_in_" + rel.getStartNodeObjectType())).add(populateRelationMaps(rel, "in"));
             } else {
-                relMap.put((String) relationMap.get(rel.getRelationType() + "_in_" + rel.getStartNodeObjectType()),
-                        new ArrayList<Map<String, Object>>() {{
-                            add(populateRelationMaps(rel, "in"));
-                        }});
+                String relKey = (String) relationMap.get(rel.getRelationType() + "_in_" + rel.getStartNodeObjectType());
+                if (StringUtils.isNotBlank(relKey)) {
+                    relMap.put(relKey,
+                            new ArrayList<Map<String, Object>>() {{
+                                add(populateRelationMaps(rel, "in"));
+                            }});
+                }
             }
 
         }
@@ -79,10 +84,13 @@ public class NodeUtils {
             if (relMap.containsKey(relationMap.get(rel.getRelationType() + "_out_" + rel.getEndNodeObjectType()))) {
                 relMap.get(relationMap.get(rel.getRelationType() + "_out_" + rel.getEndNodeObjectType())).add(populateRelationMaps(rel, "out"));
             } else {
-                relMap.put((String) relationMap.get(rel.getRelationType() + "_out_" + rel.getEndNodeObjectType()),
-                        new ArrayList<Map<String, Object>>() {{
-                            add(populateRelationMaps(rel, "out"));
-                        }});
+                String relKey = (String) relationMap.get(rel.getRelationType() + "_out_" + rel.getEndNodeObjectType());
+                if (StringUtils.isNotBlank(relKey)) {
+                    relMap.put(relKey,
+                            new ArrayList<Map<String, Object>>() {{
+                                add(populateRelationMaps(rel, "out"));
+                            }});
+                }
             }
 
         }
@@ -112,6 +120,6 @@ public class NodeUtils {
     }
 
     public static Boolean isRetired(Node node) {
-        return StringUtils.equalsIgnoreCase((String) node.getMetadata().get("status"), "Retired") ? true : false;
+        return StringUtils.equalsIgnoreCase((String) node.getMetadata().get("status"), "Retired");
     }
 }
