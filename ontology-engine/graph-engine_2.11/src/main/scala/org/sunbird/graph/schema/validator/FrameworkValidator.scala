@@ -2,7 +2,7 @@ package org.sunbird.graph.schema.validator
 
 import java.util
 
-import org.sunbird.cache.impl.CategoryCache
+import org.sunbird.cache.impl.CategoryCacheJava
 import org.sunbird.common.exception.ClientException
 import org.sunbird.graph.dac.model.Node
 import org.sunbird.graph.schema.IDefinition
@@ -12,7 +12,7 @@ import scala.collection.Map
 import scala.concurrent.{ExecutionContext, Future}
 
 trait FrameworkValidator extends IDefinition {
-  val categoryCache: CategoryCache = new CategoryCache()
+  val categoryCache: CategoryCacheJava = new CategoryCacheJava()
   @throws[Exception]
   abstract override def validate(node: Node, operation: String)(implicit ec: ExecutionContext): Future[Node] = {
     val fwCategories: List[String] = schemaValidator.getConfig.getStringList("frameworkCategories").asScala.toList

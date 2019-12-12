@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @author Kumar Gauraw
  */
-public interface ICacheManager {
+public interface ICacheManagerJava {
 
     /**
      * This method provides key generation implementation for cache.

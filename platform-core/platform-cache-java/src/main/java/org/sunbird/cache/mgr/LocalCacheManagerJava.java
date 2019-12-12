@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public abstract class LocalCacheManager implements ICacheManager {
+public abstract class LocalCacheManagerJava implements ICacheManagerJava {
 
     ICacheHandler handler;
 

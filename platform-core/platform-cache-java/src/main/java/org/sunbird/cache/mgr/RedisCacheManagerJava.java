@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Kumar Gauraw
  */
-public abstract class RedisCacheManager implements ICacheManager {
+public abstract class RedisCacheManagerJava implements ICacheManagerJava {
 
     protected ICacheHandler handler;
 

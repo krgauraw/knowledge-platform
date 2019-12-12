@@ -1,13 +1,13 @@
 package org.sunbird.cache.impl;
 
 import org.sunbird.cache.impl.handler.CategoryCacheHandler;
-import org.sunbird.cache.mgr.RedisCacheManager;
+import org.sunbird.cache.mgr.RedisCacheManagerJava;
 
 import java.util.List;
 
-public class CategoryCache extends RedisCacheManager {
+public class CategoryCacheJava extends RedisCacheManagerJava {
 
-    public CategoryCache() {
+    public CategoryCacheJava() {
         handler = new CategoryCacheHandler();
     }
 
