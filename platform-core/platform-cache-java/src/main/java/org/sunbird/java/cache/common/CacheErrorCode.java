@@ -1,4 +1,4 @@
-package org.sunbird.cache.common;
+package org.sunbird.java.cache.common;
 
 /**
  * This Enum Holds All Cache Error Codes.

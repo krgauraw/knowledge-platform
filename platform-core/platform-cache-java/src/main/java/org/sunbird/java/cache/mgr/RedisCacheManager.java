@@ -1,8 +1,8 @@
-package org.sunbird.cache.mgr;
+package org.sunbird.java.cache.mgr;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.sunbird.cache.common.CacheHandlerOperation;
+import org.sunbird.java.cache.common.CacheHandlerOperation;
 import org.sunbird.cache.handler.ICacheHandler;
 import org.sunbird.cache.util.RedisCacheUtil;
 import org.sunbird.common.exception.ResourceNotFoundException;

@@ -1,4 +1,4 @@
-package org.sunbird.cache.common;
+package org.sunbird.java.cache.common;
 
 /**
  * This Enum Holds All Operation Code for Cache Handler

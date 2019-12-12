@@ -15,7 +15,7 @@
         <module>platform-telemetry</module>
         <module>actor-core</module>
         <module>schema-validator</module>
-        <module>platform-cache</module>
+        <module>platform-cache-java</module>
         <module>cassandra-connector</module>
     </modules>
 

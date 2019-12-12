@@ -1,6 +1,6 @@
-package org.sunbird.cache.mgr;
+package org.sunbird.java.cache.mgr;
 
-import org.sunbird.cache.common.CacheErrorCode;
+import org.sunbird.java.cache.common.CacheErrorCode;
 import org.sunbird.cache.handler.ICacheHandler;
 import org.sunbird.cache.util.RedisCacheUtil;
 import org.sunbird.common.exception.ServerException;

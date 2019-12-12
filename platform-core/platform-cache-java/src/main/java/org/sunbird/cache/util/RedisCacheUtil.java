@@ -1,7 +1,7 @@
 package org.sunbird.cache.util;
 
 import org.apache.commons.lang3.StringUtils;
-import org.sunbird.cache.common.CacheErrorCode;
+import org.sunbird.java.cache.common.CacheErrorCode;
 import org.sunbird.common.exception.ServerException;
 import org.sunbird.telemetry.logger.TelemetryManager;
 import redis.clients.jedis.Jedis;

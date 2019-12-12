@@ -1,4 +1,4 @@
-package org.sunbird.cache.mgr;
+package org.sunbird.java.cache.mgr;
 
 import java.util.List;
 

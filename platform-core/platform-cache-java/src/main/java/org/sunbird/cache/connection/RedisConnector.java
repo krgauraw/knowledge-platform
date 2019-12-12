@@ -1,6 +1,6 @@
 package org.sunbird.cache.connection;
 
-import org.sunbird.cache.common.CacheErrorCode;
+import org.sunbird.java.cache.common.CacheErrorCode;
 import org.sunbird.common.Platform;
 import org.sunbird.common.exception.ServerException;
 import org.sunbird.telemetry.logger.TelemetryManager;
