@@ -27,7 +27,7 @@ object RedisCache {
 		} catch {
 			case e: Exception =>
 				TelemetryManager.error("Exception Occurred While Saving String Data to Redis Cache for Key : " + key + "| Exception is:", e)
-				throw new ServerException(CacheErrorCode.ERR_CACHE_SAVE_PROPERTY_ERROR, e.getMessage)
+				throw new ServerException(CacheErrorCode.ERR_CACHE_SAVE_PROPERTY_ERROR.toString, e.getMessage)
 		} finally returnConnection(jedis)
 	}
 
@@ -43,7 +43,7 @@ object RedisCache {
 		catch {
 			case e: Exception =>
 				TelemetryManager.error("Exception Occurred While Fetching String Data from Redis Cache for Key : " + key + "| Exception is:", e)
-				throw new ServerException(CacheErrorCode.ERR_CACHE_GET_PROPERTY_ERROR, e.getMessage)
+				throw new ServerException(CacheErrorCode.ERR_CACHE_GET_PROPERTY_ERROR.toString, e.getMessage)
 		} finally returnConnection(jedis)
 	}
 
@@ -63,7 +63,7 @@ object RedisCache {
 		} catch {
 			case e: Exception =>
 				TelemetryManager.error("Exception Occurred While Saving List Data to Redis Cache for Key : " + key + "| Exception is:", e)
-				throw new ServerException(CacheErrorCode.ERR_CACHE_SAVE_PROPERTY_ERROR, e.getMessage)
+				throw new ServerException(CacheErrorCode.ERR_CACHE_SAVE_PROPERTY_ERROR.toString, e.getMessage)
 		} finally returnConnection(jedis)
 	}
 
@@ -79,7 +79,7 @@ object RedisCache {
 		catch {
 			case e: Exception =>
 				TelemetryManager.error("Exception Occurred While Fetching List Data from Redis Cache for Key : " + key + "| Exception is:", e)
-				throw new ServerException(CacheErrorCode.ERR_CACHE_GET_PROPERTY_ERROR, e.getMessage)
+				throw new ServerException(CacheErrorCode.ERR_CACHE_GET_PROPERTY_ERROR.toString, e.getMessage)
 		} finally returnConnection(jedis)
 	}
 
@@ -94,7 +94,7 @@ object RedisCache {
 		catch {
 			case e: Exception =>
 				TelemetryManager.error("Exception Occurred While Deleting Records From Redis Cache for Identifiers : " + keys.toArray + " | Exception is : ", e)
-				throw new ServerException(CacheErrorCode.ERR_CACHE_DELETE_PROPERTY_ERROR, e.getMessage)
+				throw new ServerException(CacheErrorCode.ERR_CACHE_DELETE_PROPERTY_ERROR.toString, e.getMessage)
 		} finally returnConnection(jedis)
 	}
 
@@ -113,7 +113,7 @@ object RedisCache {
 			} catch {
 				case e: Exception =>
 					TelemetryManager.error("Exception Occurred While Deleting Records From Redis Cache for Pattern : " + pattern + " | Exception is : ", e)
-					throw new ServerException(CacheErrorCode.ERR_CACHE_DELETE_PROPERTY_ERROR, e.getMessage)
+					throw new ServerException(CacheErrorCode.ERR_CACHE_DELETE_PROPERTY_ERROR.toString, e.getMessage)
 			} finally returnConnection(jedis)
 		}
 	}
@@ -131,7 +131,7 @@ object RedisCache {
 		catch {
 			case e: Exception =>
 				TelemetryManager.error("Exception Occurred While Incrementing Value for Key : " + key + " | Exception is : ", e)
-				throw new ServerException(CacheErrorCode.ERR_CACHE_GET_PROPERTY_ERROR, e.getMessage)
+				throw new ServerException(CacheErrorCode.ERR_CACHE_GET_PROPERTY_ERROR.toString, e.getMessage)
 		} finally returnConnection(jedis)
 	}
 
@@ -148,7 +148,7 @@ object RedisCache {
 			catch {
 				case e: Exception =>
 					TelemetryManager.error("Exception Occurred While Publishing Message to Redis Channel : " + channel + " for data : " + data + " | Exception is : ", e)
-					throw new ServerException(CacheErrorCode.ERR_CACHE_PUBLISH_CHANNEL_ERROR, e.getMessage)
+					throw new ServerException(CacheErrorCode.ERR_CACHE_PUBLISH_CHANNEL_ERROR.toString, e.getMessage)
 			} finally returnConnection(jedis)
 		}
 	}
@@ -166,7 +166,7 @@ object RedisCache {
 			catch {
 				case e: Exception =>
 					TelemetryManager.error("Exception Occurred While Subscribing to Redis Channel : " + channel + " | Exception is : ", e)
-					throw new ServerException(CacheErrorCode.ERR_CACHE_SUBSCRIBE_CHANNEL_ERROR, e.getMessage)
+					throw new ServerException(CacheErrorCode.ERR_CACHE_SUBSCRIBE_CHANNEL_ERROR.toString, e.getMessage)
 			}
 		}
 	}
@@ -183,7 +183,7 @@ object RedisCache {
 		catch {
 			case e: Exception =>
 				TelemetryManager.error("Exception Occurred While Deleting Partial Data From Redis Cache for Key : " + key + "| Exception is:", e)
-				throw new ServerException(CacheErrorCode.ERR_CACHE_DELETE_PROPERTY_ERROR, e.getMessage)
+				throw new ServerException(CacheErrorCode.ERR_CACHE_DELETE_PROPERTY_ERROR.toString, e.getMessage)
 		} finally returnConnection(jedis)
 	}
 }

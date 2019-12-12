@@ -45,4 +45,6 @@ trait ICacheManager[T] {
 	 * @param isPartialUpdate
 	 */
 	def setList(key: String, data: List[String], isPartialUpdate: Boolean): Unit
+
+
 }
