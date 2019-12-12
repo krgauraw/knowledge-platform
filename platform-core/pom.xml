@@ -17,6 +17,7 @@
         <module>schema-validator</module>
         <module>platform-cache-java</module>
         <module>cassandra-connector</module>
+        <module>platform-cache</module>
     </modules>
 
     <dependencies>

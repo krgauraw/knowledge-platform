@@ -1,6 +1,7 @@
 package controllers.v3
 
 import akka.actor.{ActorRef, ActorSystem}
+import cache.ContentCache
 import com.google.inject.Singleton
 import controllers.BaseController
 import javax.inject.{Inject, Named}
@@ -20,6 +21,7 @@ class ContentController @Inject()(@Named(ActorNames.CONTENT_ACTOR) contentActor:
 
     def create() = Action.async { implicit request =>
         val headers = commonHeaders()
+        testContentCache()
         val body = requestBody()
         val content = body.getOrElse("content", new java.util.HashMap()).asInstanceOf[java.util.Map[String, Object]];
         content.putAll(headers)
@@ -75,6 +77,39 @@ class ContentController @Inject()(@Named(ActorNames.CONTENT_ACTOR) contentActor:
         val contentRequest = getRequest(body, headers, "removeHierarchy")
         setRequestContext(contentRequest, version, objectType, schemaName)
         getResult(ApiId.REMOVE_HIERARCHY, collectionActor, contentRequest)
+    }
+
+    def testContentCache() = {
+        println("============ Content Cache Testing ============")
+
+        println("Saving String Data For Key test-c-001")
+        ContentCache.setObject("test-c-001","Hello! I am from Cache!",0)
+
+        println("Getting String Data For Key test-c-001 With Default Handler")
+        println("Data for Key test-c-001 : "+ContentCache.getObject("test-c-001"))
+
+        println("Getting String Data For Key test-c-002 With Default Handler")
+        println("Data for Key test-c-002 : "+ContentCache.getObject("test-c-002"))
+
+        def customHandler(key:String, objKey:String):String = "I am from Custom Handler!"
+        println("Getting String Data For Key test-c-003 With Custom Handler")
+        println("Data for Key test-c-003 : "+ContentCache.getObject("test-c-003",customHandler))
+
+        println("\n------------------------------------------------------------------------------------\n")
+
+        println("Saving List Data For Key test-cl-001")
+        ContentCache.setList("test-cl-001", List[String]("test-l-val1","test-l-val2"))
+
+        println("Reading List Data For Key test-cl-001 With Default Handler")
+        println("Data for Key test-cl-001 : "+ContentCache.getList("test-cl-001"))
+
+        println("Reading List Data For Key test-cl-002 With Default Handler")
+        println("Data for Key test-cl-002 : "+ContentCache.getList("test-cl-002"))
+
+        def customListHandler(key:String, objKey:String):List[String] = List[String]("cache-custom-handler-val")
+        println("Reading List Data For Key test-cl-003 With Custom Handler")
+        println("Data for Key test-cl-003 : "+ContentCache.getList("test-cl-003",customListHandler))
+
     }
 
 }
