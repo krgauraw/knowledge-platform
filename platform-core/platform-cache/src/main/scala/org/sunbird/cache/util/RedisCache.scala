@@ -18,7 +18,7 @@ object RedisCache {
 	 * @param data
 	 * @param ttl
 	 */
-	def saveString(key: String, data: String, ttl: Int): Unit = {
+	def saveString(key: String, data: String, ttl: Int = 0): Unit = {
 		val jedis = getConnection
 		try {
 			jedis.del(key)

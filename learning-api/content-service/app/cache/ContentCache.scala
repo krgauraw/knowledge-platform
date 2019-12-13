@@ -76,5 +76,40 @@ object ContentCache extends ICacheManager[String] {
 		List[String]("test-habdler-val1", "test-handler-val2")
 	}
 
+	/**
+	 * This method provides implementation for increment operation for value of given key
+	 *
+	 * @param key
+	 * @return Double
+	 */
+	override def increment(key: String): Double = ???
 
+	/**
+	 * This method provides implementation for reset/delete operation for given key/keys
+	 *
+	 * @param key
+	 */
+	override def delete(key: String*): Unit = ???
+
+	/**
+	 *
+	 * @param key
+	 * @param data
+	 */
+	override def delete(key: String, data: List[String]): Unit = ???
+
+	/**
+	 * This method provides implementation for publish message operation to Redis Channel.
+	 *
+	 * @param channel
+	 * @param message
+	 */
+	override def publish(channel: String, message: String): Unit = ???
+
+	/**
+	 * This method provides implementation for subscribe operation to Redis Channel.
+	 *
+	 * @param channels
+	 */
+	override def subscribe(channels: String*): Unit = ???
 }

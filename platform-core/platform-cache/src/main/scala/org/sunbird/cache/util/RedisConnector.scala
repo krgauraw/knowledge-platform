@@ -34,7 +34,7 @@ object RedisConnector {
 	} catch {
 		case e: Exception =>
 			TelemetryManager.error("Exception Occurred While Returning Redis Cache Connection Object to Pool.", e)
-			throw new ServerException(CacheErrorCode.ERR_CACHE_CONNECTION_ERROR, e.getMessage)
+			throw new ServerException(CacheErrorCode.ERR_CACHE_CONNECTION_ERROR.toString, e.getMessage)
 	}
 
 	/**
@@ -47,7 +47,7 @@ object RedisConnector {
 		catch {
 			case e: Exception =>
 				TelemetryManager.error("Exception Occurred While Returning Redis Cache Connection Object to Pool.", e)
-				throw new ServerException(CacheErrorCode.ERR_CACHE_CONNECTION_ERROR, e.getMessage)
+				throw new ServerException(CacheErrorCode.ERR_CACHE_CONNECTION_ERROR.toString, e.getMessage)
 		}
 	}
 }

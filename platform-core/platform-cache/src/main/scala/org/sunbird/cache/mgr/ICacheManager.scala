@@ -1,5 +1,10 @@
 package org.sunbird.cache.mgr
 
+/**
+ * Contract for Cache Management
+ *
+ * @author Kumar Gauraw
+ */
 trait ICacheManager[T] {
 
 	/**
@@ -46,5 +51,41 @@ trait ICacheManager[T] {
 	 */
 	def setList(key: String, data: List[String], isPartialUpdate: Boolean): Unit
 
+	/**
+	 * This method provides implementation for increment operation for value of given key
+	 *
+	 * @param key
+	 * @return Double
+	 */
+	def increment(key: String): Double
+
+	/**
+	 * This method provides implementation for reset/delete operation for given key/keys
+	 *
+	 * @param key
+	 */
+	def delete(key: String*): Unit
+
+	/**
+	 *
+	 * @param key
+	 * @param data
+	 */
+	def delete(key: String, data: List[String]): Unit
+
+	/**
+	 * This method provides implementation for publish message operation to Redis Channel.
+	 *
+	 * @param channel
+	 * @param message
+	 */
+	def publish(channel: String, message: String): Unit
+
+	/**
+	 * This method provides implementation for subscribe operation to Redis Channel.
+	 *
+	 * @param channels
+	 */
+	def subscribe(channels: String*): Unit
 
 }
