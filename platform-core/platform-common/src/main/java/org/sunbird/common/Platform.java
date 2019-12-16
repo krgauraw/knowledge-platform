@@ -52,4 +52,12 @@ public class Platform {
 		return graphIds.get(service);
 	}
 
+	public String getString(String key, String defaultVal) {
+		return config.hasPath(key) ? config.getString(key): defaultVal;
+	}
+
+	public Integer getInteger(String key, Integer defaultVal) {
+		return config.hasPath(key) ? config.getInt(key) : defaultVal;
+	}
+
 }
