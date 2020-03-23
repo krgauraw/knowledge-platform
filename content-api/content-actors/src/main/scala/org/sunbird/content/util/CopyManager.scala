@@ -7,6 +7,7 @@ import java.util
 import java.util.UUID
 import java.util.concurrent.CompletionException
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections4.MapUtils
 import org.apache.commons.io.{FileUtils, FilenameUtils}
@@ -29,6 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 object CopyManager {
+    val mapper = new ObjectMapper();
     implicit val oec: OntologyEngineContext = new OntologyEngineContext
     private val TEMP_FILE_LOCATION = Platform.getString("content.upload.temp_location", "/tmp/content")
     private val metadataNotTobeCopied = Platform.config.getStringList("content.copy.props_to_remove")
@@ -97,6 +99,7 @@ object CopyManager {
     def updateHierarchy(request: Request, node: Node, originNode: Node, originHierarchy: util.Map[String, AnyRef], copyType:String)(implicit ec: ExecutionContext): Future[Node] = {
         val updateHierarchyRequest = prepareHierarchyRequest(originHierarchy, originNode, node, copyType)
         println("updateHierarchyRequest ::: "+updateHierarchyRequest)
+        println("updateHierarchyRequest json string ::: "+mapper.writeValueAsString(updateHierarchyRequest))
         val hierarchyRequest = new Request(request)
         hierarchyRequest.putAll(updateHierarchyRequest)
         hierarchyRequest.getContext.put("schemaName", collSchemaName)

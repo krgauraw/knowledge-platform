@@ -4,6 +4,7 @@ import java.util
 import java.util.concurrent.CompletionException
 import java.util.HashMap
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.commons.collections4.{CollectionUtils, ListUtils, MapUtils}
 import org.apache.commons.lang3.StringUtils
 import org.sunbird.common.{DateUtils, JsonUtils, Platform}
@@ -25,6 +26,8 @@ import scala.collection.mutable.ListBuffer
 import scala.concurrent.{ExecutionContext, Future}
 
 object UpdateHierarchyManager {
+
+    val mapper = new ObjectMapper();
     @throws[Exception]
     def updateHierarchy(request: Request)(implicit oec: OntologyEngineContext, ec: ExecutionContext): Future[Response] = {
         validateRequest(request)
@@ -32,6 +35,8 @@ object UpdateHierarchyManager {
         val hierarchy: util.HashMap[String, AnyRef] = request.getRequest.get(HierarchyConstants.HIERARCHY).asInstanceOf[util.HashMap[String, AnyRef]]
         val rootId: String = getRootId(nodesModified, hierarchy)
         println("rootId :: "+rootId)
+        println("nodesModified :: " +mapper.writeValueAsString(nodesModified))
+        println("hierarchy :: " +mapper.writeValueAsString(hierarchy))
         request.getContext.put(HierarchyConstants.ROOT_ID, rootId)
         var nodeList: ListBuffer[Node] = ListBuffer[Node]()
         getValidatedRootNode(rootId, request).map(node => {
