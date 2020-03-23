@@ -31,6 +31,7 @@ object UpdateHierarchyManager {
         val nodesModified: util.HashMap[String, AnyRef] = request.getRequest.get(HierarchyConstants.NODES_MODIFIED).asInstanceOf[util.HashMap[String, AnyRef]]
         val hierarchy: util.HashMap[String, AnyRef] = request.getRequest.get(HierarchyConstants.HIERARCHY).asInstanceOf[util.HashMap[String, AnyRef]]
         val rootId: String = getRootId(nodesModified, hierarchy)
+        println("rootId :: "+rootId)
         request.getContext.put(HierarchyConstants.ROOT_ID, rootId)
         var nodeList: ListBuffer[Node] = ListBuffer[Node]()
         getValidatedRootNode(rootId, request).map(node => {
@@ -318,6 +319,9 @@ object UpdateHierarchyManager {
                     updatedNodeList.add(node)
                     childNodeIds.add(id)
                     index += 1
+                    println("id:::::::::"+id)
+                    println("hierarchyStructure ::::::: "+hierarchyStructure)
+                    println("depth :::: "+tempNode.getMetadata.get(HierarchyConstants.DEPTH))
                     if (CollectionUtils.isNotEmpty(hierarchyStructure.getOrDefault(id, List())))
                         updateHierarchyRelatedData(hierarchyStructure.getOrDefault(id, List()), tempNode.getMetadata.get(HierarchyConstants.DEPTH).asInstanceOf[Int] + 1, id, nodeList, hierarchyStructure, childNodeIds, updatedNodeList)
                     else
