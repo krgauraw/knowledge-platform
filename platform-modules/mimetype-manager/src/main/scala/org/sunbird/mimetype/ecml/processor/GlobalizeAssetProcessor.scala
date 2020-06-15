@@ -41,11 +41,11 @@ trait GlobalizeAssetProcessor extends IProcessor {
                             println("file path ::: "+file.getAbsolutePath)
                             val cloudDirName = {
                                 val assetDir = if(Platform.config.hasPath(ASSET_DIR)) Platform.config.getString(ASSET_DIR) else System.currentTimeMillis()
-                                Platform.config.getString(OBJECT_DIR) + File.separator + Slug.makeSlug(getIdentifier(), true) + assetDir
+                                Platform.config.getString(OBJECT_DIR) + File.separator + Slug.makeSlug(getIdentifier(), true) + File.separator + assetDir
                             }
                             println("cloudDirName ::: "+cloudDirName)
                             val uploadFileUrl: Array[String] = ss.uploadFile(cloudDirName, file)
-                            println("uploadFileUrl :::: "+uploadFileUrl)
+                            println("uploadFileUrl :::: "+uploadFileUrl.toList)
                             if(null != uploadFileUrl && uploadFileUrl.size > 1)
                                 Media(media.id, media.data, media.innerText, media.cData, uploadFileUrl(1), media.`type`, media.childrenPlugin)
                             else media
