@@ -22,15 +22,18 @@ class EcmlMimeTypeMgrImpl(implicit ss: StorageService) extends BaseMimeTypeManag
 		validateFilePackage(uploadFile)
 		//generateECRF
 		val basePath:String = getBasePath(objectId)
+		println("basePath ::: "+basePath)
 		extractPackage(uploadFile, basePath)
 
 		val ecmlType: String = getEcmlType(basePath)
 		val ecml = getFileString(basePath, ecmlType)
+		println("ecml :::: "+ecml)
 		// generate ECML
 		val ecrf: Plugin = getEcrfObject(ecmlType, ecml);
 
 		val processedEcrf: Plugin = new ECMLExtractor(basePath, objectId).process(ecrf)
 		val processedEcml: String = getEcmlStringFromEcrf(processedEcrf, ecmlType)
+		println("processedEcml :::: "+processedEcml)
 		//upload file
 		val result: Array[String] = uploadArtifactToCloud(uploadFile, objectId, filePath)
 		//extractFile
