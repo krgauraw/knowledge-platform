@@ -11,6 +11,8 @@ trait EmbedControllerProcessor extends IProcessor {
 
     abstract override def process(ecrf: Plugin)(implicit ss: StorageService): Plugin = {
         val controllerList = embedController(ecrf)
+        println("controllerList :::: "+controllerList)
+        println("ecrf.manifest ::::: "+ecrf.manifest)
         super.process(Plugin(ecrf.id, ecrf.data, ecrf.innerText, ecrf.cData, ecrf.childrenPlugin, ecrf.manifest, controllerList, ecrf.events))
     }
 
@@ -28,6 +30,7 @@ trait EmbedControllerProcessor extends IProcessor {
                             new File(getBasePath() + File.separator + "data" + File.separator + id + ".json")
                         else null
                     }
+                    println("file path from EmbedControllerProcessor :::: "+file.getAbsolutePath)
                     if(null != file && file.exists()){
                         Controller(control.id, control.data, control.innerText, FileUtils.readFileToString(file, StandardCharsets.UTF_8))
                     }else control

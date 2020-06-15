@@ -144,6 +144,7 @@ object XmlParser {
      *
      */
     def toString(plugin: Plugin): String = {
+	    println("from toString ::::: plugin.manifest ::::: "+plugin.manifest)
         val strBuilder = StringBuilder.newBuilder
         if(null != plugin) {
             strBuilder.append(getElementXml(plugin.data))
@@ -188,6 +189,7 @@ object XmlParser {
             .append(getMediaXml(manifest.medias))
             .append(getEndTag(manifest.data.getOrElse("cwp_element_name", "").asInstanceOf[String]))
         }
+	    println("getContentManifestXml ::::: strBuilder"+strBuilder)
 	    strBuilder
     }
 
