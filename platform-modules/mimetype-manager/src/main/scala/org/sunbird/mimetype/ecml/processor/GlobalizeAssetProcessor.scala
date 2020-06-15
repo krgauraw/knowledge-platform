@@ -46,9 +46,10 @@ trait GlobalizeAssetProcessor extends IProcessor {
                             println("cloudDirName ::: "+cloudDirName)
                             val uploadFileUrl: Array[String] = ss.uploadFile(cloudDirName, file)
                             println("uploadFileUrl :::: "+uploadFileUrl.toList)
-                            if(null != uploadFileUrl && uploadFileUrl.size > 1)
-                                Media(media.id, media.data, media.innerText, media.cData, uploadFileUrl(1), media.`type`, media.childrenPlugin)
-                            else media
+                            if(null != uploadFileUrl && uploadFileUrl.size > 1) {
+                                val url = {if(uploadFileUrl(1).startsWith("http") || uploadFileUrl(1).startsWith("/")) ("/" + uploadFileUrl(1)) else uploadFileUrl(1)}
+                                Media(media.id, media.data, media.innerText, media.cData, url, media.`type`, media.childrenPlugin)
+                            } else media
                         }
                     }))
             val mediaList:List[Media] = Await.result(future, Duration.apply(timeout, "second"))
