@@ -46,7 +46,7 @@ trait GlobalizeAssetProcessor extends IProcessor {
 					  }*/
                       val mediaSrc = media.data.getOrElse("src", "").asInstanceOf[String]
                       println("mediaSrc :::: " + mediaSrc)
-                      val cloudDirName = FilenameUtils.getFullPathNoEndSeparator(mediaSrc)
+                      val cloudDirName = FilenameUtils.getFullPathNoEndSeparator(mediaSrc).replace("/assets/public/","").replace("content-plugins/","").trim
                       println("cloudDirName ::: " + cloudDirName)
                       //TODO: take it from config
                       val baseUrl = "https://dev.sunbirded.org"
