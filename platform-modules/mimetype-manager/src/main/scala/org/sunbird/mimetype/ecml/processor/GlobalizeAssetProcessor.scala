@@ -30,9 +30,10 @@ trait GlobalizeAssetProcessor extends IProcessor {
         if(null != medias) {
             val future:Future[List[Media]] = Future.sequence(medias.filter(media=> StringUtils.isNotBlank(media.id) && StringUtils.isNotBlank(media.src) && StringUtils.isNotBlank(media.`type`))
                     .map(media => {
-                        println("media :::: "+media)
-                        println("media src ::: "+media.src)
+                        //println("media :::: "+media)
+
                         Future{
+                            println("media src ::: "+media.src)
                             val file:File  = {
                                 if(widgetTypeAssets.contains(media.`type`)) new File(getBasePath() + File.separator + "widgets" + File.separator + media.src)
                                 else new File(getBasePath() + File.separator + "assets" + File.separator + media.src)
@@ -54,11 +55,13 @@ trait GlobalizeAssetProcessor extends IProcessor {
                                 }else
                                 Media(media.id, media.data, media.innerText, media.cData, uploadFileUrl(1), media.`type`, media.childrenPlugin)
                             } else media*/
+
                             if(null != uploadFileUrl && uploadFileUrl.size > 1) {
                                 val src = media.data.getOrElse("src", "").asInstanceOf[String]
                                 if(!(src.startsWith("http") || src.startsWith("/"))) {
                                     //val temp =  media.data ++ Map("src" -> ("/" + src))
-                                    val temp =  media.data ++ Map("src" -> uploadFileUrl(1))
+                                    //val temp =  media.data ++ Map("src" -> uploadFileUrl(1))
+                                    val temp =  media.data ++ Map("src" -> ("assets/public/"+uploadFileUrl(0)))
                                     Media(media.id, temp, media.innerText, media.cData, uploadFileUrl(1), media.`type`, media.childrenPlugin)
                                 }else
                                     Media(media.id, media.data, media.innerText, media.cData, uploadFileUrl(1), media.`type`, media.childrenPlugin)
