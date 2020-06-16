@@ -50,7 +50,9 @@ trait GlobalizeAssetProcessor extends IProcessor {
                       println("cloudDirName ::: " + cloudDirName)
                       //TODO: take it from config
                       val baseUrl = "https://dev.sunbirded.org"
-                      val blobUrl = if (mediaSrc.startsWith("assets/public/")) baseUrl + File.separator + mediaSrc else baseUrl + File.separator + "assets/public/" + mediaSrc
+                      val blobUrl = if (!(mediaSrc.startsWith("http"))) {
+                          if(mediaSrc.startsWith("/")) baseUrl + mediaSrc else  baseUrl + File.separator + mediaSrc
+                      }
                       println("blobUrl :::: " + blobUrl)
                       //val uploadFileUrl: Array[String] = ss.uploadFile(cloudDirName, file)
                       val uploadFileUrl: Array[String] = if (StringUtils.isNoneBlank(cloudDirName) && getBlobLength(media.src) == 0) ss.uploadFile(cloudDirName, file)
