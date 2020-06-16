@@ -2,9 +2,12 @@ package org.sunbird.mimetype.ecml.processor
 
 import java.io.File
 
+import com.mashape.unirest.http.{HttpResponse, Unirest}
+import org.apache.commons.collections.MapUtils
+import org.apache.commons.io.FilenameUtils
 import org.apache.commons.lang3.StringUtils
 import org.sunbird.cloudstore.StorageService
-import org.sunbird.common.{Platform, Slug}
+import org.sunbird.common.{HttpUtil, Platform, Slug}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -40,12 +43,24 @@ trait GlobalizeAssetProcessor extends IProcessor {
                             }
                             if(null!=file)
                             println("file path ::: "+file.getAbsolutePath)
-                            val cloudDirName = {
+                            /*val cloudDirName = {
                                 val assetDir = if(Platform.config.hasPath(ASSET_DIR)) Platform.config.getString(ASSET_DIR) else System.currentTimeMillis()
                                 Platform.config.getString(OBJECT_DIR) + File.separator + Slug.makeSlug(getIdentifier(), true) + File.separator + assetDir
-                            }
+                            }*/
+                            val mediaSrc = media.data.getOrElse("src", "").asInstanceOf[String]
+                            println("mediaSrc :::: "+mediaSrc)
+                            val cloudDirName = FilenameUtils.getFullPathNoEndSeparator(mediaSrc)
                             println("cloudDirName ::: "+cloudDirName)
-                            val uploadFileUrl: Array[String] = ss.uploadFile(cloudDirName, file)
+                            //TODO: take it from config
+                            val baseUrl = "https://dev.sunbirded.org"
+                            val blobUrl = if(mediaSrc.startsWith("/assets/public/")) baseUrl + mediaSrc else if(mediaSrc.startsWith("/"))baseUrl+mediaSrc
+                                else baseUrl + mediaSrc
+                            println("blobUrl :::: "+blobUrl)
+
+                            val uploadFileUrl: Array[String] = if(StringUtils.isNoneBlank(cloudDirName) && getBlobLength(media.src)==0) ss.uploadFile(cloudDirName, file)
+                                else new Array[String](1)
+
+                            //val uploadFileUrl: Array[String] = ss.uploadFile(cloudDirName, file)
                             println("uploadFileUrl :::: "+uploadFileUrl.toList)
                             /*if(null != uploadFileUrl && uploadFileUrl.size > 1) {
                                 val url = uploadFileUrl(0)
@@ -59,9 +74,9 @@ trait GlobalizeAssetProcessor extends IProcessor {
                             if(null != uploadFileUrl && uploadFileUrl.size > 1) {
                                 val src = media.data.getOrElse("src", "").asInstanceOf[String]
                                 if(!(src.startsWith("http") || src.startsWith("/"))) {
-                                    //val temp =  media.data ++ Map("src" -> ("/" + src))
+                                    val temp =  media.data ++ Map("src" -> ("/" + src))
                                     //val temp =  media.data ++ Map("src" -> uploadFileUrl(1))
-                                    val temp =  media.data ++ Map("src" -> ("/assets/public/"+uploadFileUrl(0)))
+                                    //val temp =  media.data ++ Map("src" -> ("/assets/public/"+uploadFileUrl(0)))
                                     Media(media.id, temp, media.innerText, media.cData, uploadFileUrl(1), media.`type`, media.childrenPlugin)
                                 }else
                                     Media(media.id, media.data, media.innerText, media.cData, uploadFileUrl(1), media.`type`, media.childrenPlugin)
@@ -74,5 +89,14 @@ trait GlobalizeAssetProcessor extends IProcessor {
                 mediaList
             else medias
         } else medias
+    }
+
+    def getBlobLength(url:String):Long = {
+        val response = Unirest.head(url).header("Content-Type", "application/json").asString
+        if (response.getStatus == 200 && null!=response.getHeaders) {
+            val size : Long = if(response.getHeaders.containsKey("Content-Length")) response.getHeaders.get("Content-Length").get(0).toLong
+            else if(response.getHeaders.containsKey("content-length")) response.getHeaders.get("content-length").get(0).toLong else 0.toLong
+            size
+        } else 0.toLong
     }
 }
