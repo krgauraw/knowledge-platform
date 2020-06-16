@@ -2,6 +2,8 @@ package org.sunbird.mimetype.ecml.processor
 
 import java.io.File
 
+import com.mashape.unirest.http.Unirest
+import org.apache.commons.io.FilenameUtils
 import org.apache.commons.lang3.StringUtils
 import org.sunbird.cloudstore.StorageService
 import org.sunbird.common.{Platform, Slug}
@@ -16,9 +18,13 @@ trait GlobalizeAssetProcessor extends IProcessor {
     val timeout: Long = if(Platform.config.hasPath("asset.max_upload_time")) Platform.config.getLong("asset.max_upload_time") else 60
 
     abstract override def process(ecrf: Plugin)(implicit ss: StorageService): Plugin = {
+        println("GlobalizeAssetProcessor ::: process ::: start")
         val manifest = ecrf.manifest
+        println("manifest :::: "+manifest)
         val updatedMedias:List[Media] = uploadAssets(manifest.medias)
+        println("updatedMedias :::: "+updatedMedias)
         val updatedManifest:Manifest = Manifest(manifest.id, manifest.data, manifest.innerText, manifest.cData, updatedMedias)
+        println("updatedManifest :::: "+updatedManifest)
         super.process(Plugin(ecrf.id, ecrf.data, ecrf.innerText, ecrf.cData, ecrf.childrenPlugin, updatedManifest, ecrf.controllers, ecrf.events))
     }
 
@@ -27,24 +33,52 @@ trait GlobalizeAssetProcessor extends IProcessor {
             val future:Future[List[Media]] = Future.sequence(medias.filter(media=> StringUtils.isNotBlank(media.id) && StringUtils.isNotBlank(media.src) && StringUtils.isNotBlank(media.`type`))
                     .map(media => {
                         Future{
+                            println("media src ::: "+media.src)
                             val file:File  = {
                                 if(widgetTypeAssets.contains(media.`type`)) new File(getBasePath() + File.separator + "widgets" + File.separator + media.src)
                                 else new File(getBasePath() + File.separator + "assets" + File.separator + media.src)
                             }
-                            val cloudDirName = {
+                            if(null!=file)
+                                println("file path ::: "+file.getAbsolutePath)
+                            /*val cloudDirName = {
                                 val assetDir = if(Platform.config.hasPath(ASSET_DIR)) Platform.config.getString(ASSET_DIR) else System.currentTimeMillis()
                                 Platform.config.getString(OBJECT_DIR) + File.separator + Slug.makeSlug(getIdentifier(), true) + assetDir
+                            }*/
+                            val mediaSrc = media.data.getOrElse("src", "").asInstanceOf[String]
+                            println("mediaSrc :::: "+mediaSrc)
+                            val cloudDirName = FilenameUtils.getFullPathNoEndSeparator(mediaSrc)
+                            println("cloudDirName ::: "+cloudDirName)
+                            //TODO: take it from config
+                            val baseUrl = "https://dev.sunbirded.org"
+                            val blobUrl = if(mediaSrc.startsWith("assets/public/")) baseUrl +File.separator+ mediaSrc else baseUrl + File.separator + "assets/public/"+mediaSrc
+                            println("blobUrl :::: "+blobUrl)
+                            //val uploadFileUrl: Array[String] = ss.uploadFile(cloudDirName, file)
+                            val uploadFileUrl: Array[String] = if(StringUtils.isNoneBlank(cloudDirName) && getBlobLength(media.src)==0) ss.uploadFile(cloudDirName, file)
+                            else new Array[String](1)
+                            if(null != uploadFileUrl && uploadFileUrl.size > 1){
+                                if(!(mediaSrc.startsWith("http") || mediaSrc.startsWith("/"))) {
+                                    val temp =  media.data ++ Map("src" -> ("/" + mediaSrc))
+                                    Media(media.id, temp, media.innerText, media.cData, uploadFileUrl(1), media.`type`, media.childrenPlugin)
+                                }else
+                                    Media(media.id, media.data, media.innerText, media.cData, uploadFileUrl(1), media.`type`, media.childrenPlugin)
                             }
-                            val uploadFileUrl: Array[String] = ss.uploadFile(cloudDirName, file)
-                            if(null != uploadFileUrl && uploadFileUrl.size > 1)
-                                Media(media.id, media.data, media.innerText, media.cData, uploadFileUrl(1), media.`type`, media.childrenPlugin)
                             else media
                         }
                     }))
             val mediaList:List[Media] = Await.result(future, Duration.apply(timeout, "second"))
+            println("mediaList :::: "+mediaList)
             if(null != mediaList && !mediaList.isEmpty)
                 mediaList
             else medias
         } else medias
+    }
+
+    def getBlobLength(url:String):Long = {
+        val response = Unirest.head(url).header("Content-Type", "application/json").asString
+        if (response.getStatus == 200 && null!=response.getHeaders) {
+            val size : Long = if(response.getHeaders.containsKey("Content-Length")) response.getHeaders.get("Content-Length").get(0).toLong
+            else if(response.getHeaders.containsKey("content-length")) response.getHeaders.get("content-length").get(0).toLong else 0.toLong
+            size
+        } else 0.toLong
     }
 }

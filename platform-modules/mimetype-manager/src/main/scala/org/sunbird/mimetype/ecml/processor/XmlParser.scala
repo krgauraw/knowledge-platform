@@ -76,10 +76,20 @@ object XmlParser {
             val id: String = attributeMap.getOrElse("id", "").asInstanceOf[String]
             val `type`: String = attributeMap.getOrElse("type", "").asInstanceOf[String]
             val src: String = attributeMap.getOrElse("src", "").asInstanceOf[String]
-            if(validateNode){
+            /*if(validateNode){
                 if(StringUtils.isBlank(id))
                     throw new ClientException("INVALID_MEDIA", "Error! Invalid Media ('id' is required.) in '" + node.buildString(true) + "' ...")
                 if(!(StringUtils.isNotBlank(`type`) && (StringUtils.equalsIgnoreCase(`type`, "js") || StringUtils.equalsIgnoreCase(`type`, "css"))))
+                    throw new ClientException("INVALID_MEDIA", "Error! Invalid Media ('type' is required.) in '" + node.buildString(true) + "' ...")
+                if(StringUtils.isBlank(src))
+                    throw new ClientException("INVALID_MEDIA", "Error! Invalid Media ('src' is required.) in '" + node.buildString(true) + "' ...")
+            }*/
+            if(validateNode){
+                if(StringUtils.isBlank(id))
+                    throw new ClientException("INVALID_MEDIA", "Error! Invalid Media ('id' is required.) in '" + node.buildString(true) + "' ...")
+                if(StringUtils.isBlank(id) && !(StringUtils.isNotBlank(`type`) && (StringUtils.equalsIgnoreCase(`type`, "js") || StringUtils.equalsIgnoreCase(`type`, "css"))))
+                    throw new ClientException("INVALID_MEDIA", "Error! Invalid Media ('type' is required.) in '" + node.buildString(true) + "' ...")
+                if(StringUtils.isBlank(`type`))
                     throw new ClientException("INVALID_MEDIA", "Error! Invalid Media ('type' is required.) in '" + node.buildString(true) + "' ...")
                 if(StringUtils.isBlank(src))
                     throw new ClientException("INVALID_MEDIA", "Error! Invalid Media ('src' is required.) in '" + node.buildString(true) + "' ...")
@@ -91,7 +101,8 @@ object XmlParser {
     def getManifest(node: Node, validateNode: Boolean): Manifest = {
         val childNodes = node.child
         var manifestNode : Node = null
-        childNodes.toList.filter(childNode => childNode.isInstanceOf[PCData]).map(childNode => manifestNode = childNode)
+        //childNodes.toList.filter(childNode => childNode.isInstanceOf[PCData]).map(childNode => manifestNode = childNode)
+        childNodes.toList.filter(childNode => StringUtils.equalsIgnoreCase(childNode.label,"manifest")).map(childNode => manifestNode = childNode)
         val mediaList = {
             if(null != manifestNode && !manifestNode.child.isEmpty){
                 manifestNode.child.toList.filter(childNode => childNode.isInstanceOf[Elem] && "media".equalsIgnoreCase(childNode.label)).map(childNode => getMedia(childNode, validateNode))
