@@ -61,7 +61,7 @@ trait GlobalizeAssetProcessor extends IProcessor {
                                 if(!(src.startsWith("http") || src.startsWith("/"))) {
                                     //val temp =  media.data ++ Map("src" -> ("/" + src))
                                     //val temp =  media.data ++ Map("src" -> uploadFileUrl(1))
-                                    val temp =  media.data ++ Map("src" -> ("assets/public/"+uploadFileUrl(0)))
+                                    val temp =  media.data ++ Map("src" -> ("/assets/public/"+uploadFileUrl(0)))
                                     Media(media.id, temp, media.innerText, media.cData, uploadFileUrl(1), media.`type`, media.childrenPlugin)
                                 }else
                                     Media(media.id, media.data, media.innerText, media.cData, uploadFileUrl(1), media.`type`, media.childrenPlugin)
