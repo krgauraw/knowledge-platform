@@ -46,22 +46,22 @@ trait GlobalizeAssetProcessor extends IProcessor {
                             println("cloudDirName ::: "+cloudDirName)
                             val uploadFileUrl: Array[String] = ss.uploadFile(cloudDirName, file)
                             println("uploadFileUrl :::: "+uploadFileUrl.toList)
-                            if(null != uploadFileUrl && uploadFileUrl.size > 1) {
+                            /*if(null != uploadFileUrl && uploadFileUrl.size > 1) {
                                 val url = uploadFileUrl(0)
                                 if(!(url.startsWith("http") || url.startsWith("/"))){
                                    val temp =  media.data ++ Map("src" -> ("/" + url))
                                     Media(media.id, temp, media.innerText, media.cData, uploadFileUrl(1), media.`type`, media.childrenPlugin)
                                 }else
                                 Media(media.id, media.data, media.innerText, media.cData, uploadFileUrl(1), media.`type`, media.childrenPlugin)
-                            } else media
-                            /*if(null != uploadFileUrl && uploadFileUrl.size > 1) {
+                            } else media*/
+                            if(null != uploadFileUrl && uploadFileUrl.size > 1) {
                                 val src = media.data.getOrElse("src", "").asInstanceOf[String]
                                 if(!(src.startsWith("http") || src.startsWith("/"))) {
                                     val temp =  media.data ++ Map("src" -> ("/" + src))
                                     Media(media.id, temp, media.innerText, media.cData, uploadFileUrl(1), media.`type`, media.childrenPlugin)
                                 }else
                                     Media(media.id, media.data, media.innerText, media.cData, uploadFileUrl(1), media.`type`, media.childrenPlugin)
-                            } else media*/
+                            } else media
                         }
                     }))
             val mediaList:List[Media] = Await.result(future, Duration.apply(timeout, "second"))
