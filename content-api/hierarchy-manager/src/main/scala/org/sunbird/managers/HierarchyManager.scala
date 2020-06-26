@@ -129,10 +129,14 @@ object HierarchyManager {
             val hierarchy = fetchHierarchy(request, rootNode.getIdentifier)
             hierarchy.map(hierarchy => {
                 val children = hierarchy.getOrDefault("children", new util.ArrayList[java.util.Map[String, AnyRef]]).asInstanceOf[util.ArrayList[java.util.Map[String, AnyRef]]]
+                println("children for "+rootNode.getIdentifier +" is ::: "+children)
                 val leafNodeIds = new util.ArrayList[String]()
                 fetchAllLeafNodes(children, leafNodeIds)
+                println("leafNodeIds :::: "+leafNodeIds)
                 getLatestLeafNodes(leafNodeIds).map(leafNodesMap => {
+                    println("leafNodesMap :::: "+leafNodesMap)
                     updateLatestLeafNodes(children, leafNodesMap)
+                    println("children after updating latest node ::::"+children)
                     metadata.put("children", children)
                     if(StringUtils.isNotEmpty(bookmarkId))
                         metadata = filterBookmarkHierarchy(metadata.get("children").asInstanceOf[util.List[util.Map[String, AnyRef]]], bookmarkId)
