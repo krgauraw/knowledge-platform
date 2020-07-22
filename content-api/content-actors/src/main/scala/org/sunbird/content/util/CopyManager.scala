@@ -67,13 +67,16 @@ object CopyManager {
                 response.put(ContentConstants.VERSION_KEY, copiedNode.getMetadata.get(ContentConstants.VERSION_KEY))
                 response
             })
-        }).flatMap(f => f) recoverWith { case e: CompletionException => throw e.getCause }
+        }).flatMap(f => f) recoverWith { case e: CompletionException => {
+            println("copy exception ::: "+ e.printStackTrace())
+            throw e.getCause} }
     }
 
     def copyContent(node: Node, request: Request)(implicit ec: ExecutionContext,  oec: OntologyEngineContext): Future[Node] = {
         //        cleanUpNodeRelations(node)
         val copyCreateReq: Future[Request] = getCopyRequest(node, request)
         copyCreateReq.map(req => {
+            println("copyContent ::::: copyCreateReq ::::: "+req)
             DataNode.create(req).map(copiedNode => {
                 artifactUpload(node, copiedNode, request)
             }).flatMap(f => f)
