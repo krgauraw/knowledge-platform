@@ -66,7 +66,9 @@ public class NodeAsyncOperations {
         System.out.println("entry :::: "+entry);
         try (Session session = driver.session()) {
             String statementTemplate = StringUtils.removeEnd((String) entry.get(GraphDACParams.query.name()), CypherQueryConfigurationConstants.COMMA);
+            System.out.println("statementTemplate ::: "+statementTemplate);
             Map<String, Object> statementParameters = (Map<String, Object>) entry.get(GraphDACParams.paramValueMap.name());
+            System.out.println("Line 70");
             CompletionStage<Node> cs = session.runAsync(statementTemplate, statementParameters)
             .thenCompose(fn -> fn.singleAsync())
             .thenApply(record -> {
@@ -75,10 +77,13 @@ public class NodeAsyncOperations {
                 String identifier = (String) neo4JNode.get(SystemProperties.IL_UNIQUE_ID.name()).asString();
                 node.setGraphId(graphId);
                 node.setIdentifier(identifier);
+                System.out.println("identifier ::: "+identifier);
                 if (StringUtils.isNotBlank(versionKey))
                     node.getMetadata().put(GraphDACParams.versionKey.name(), versionKey);
                 return node;
             }).exceptionally(error -> {
+                        System.out.println("Error while creating node object ::::: "+ error.getCause());
+                        error.printStackTrace();
                         if (error.getCause() instanceof org.neo4j.driver.v1.exceptions.ClientException)
                             throw new ClientException(DACErrorCodeConstants.CONSTRAINT_VALIDATION_FAILED.name(), DACErrorMessageConstants.CONSTRAINT_VALIDATION_FAILED + node.getIdentifier());
                         else {
@@ -91,6 +96,7 @@ public class NodeAsyncOperations {
             });
             return FutureConverters.toScala(cs);
         } catch (Throwable e) {
+            System.out.println("Error while creating node object ::::: "+ e.getCause());
             e.printStackTrace();
             if (!(e instanceof MiddlewareException)) {
                 throw new ServerException(DACErrorCodeConstants.CONNECTION_PROBLEM.name(),
