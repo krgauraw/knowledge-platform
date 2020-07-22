@@ -61,7 +61,9 @@ public class NodeAsyncOperations {
         NodeQueryGenerationUtil.generateCreateNodeCypherQuery(parameterMap);
         Map<String, Object> queryMap = (Map<String, Object>) parameterMap.get(GraphDACParams.queryStatementMap.name());
         Map<String, Object> entry = (Map<String, Object>) queryMap.entrySet().stream().findFirst().get().getValue();
-
+        System.out.println("parameterMap :::: "+parameterMap);
+        System.out.println("queryMap ::: "+queryMap);
+        System.out.println("entry :::: "+entry);
         try (Session session = driver.session()) {
             String statementTemplate = StringUtils.removeEnd((String) entry.get(GraphDACParams.query.name()), CypherQueryConfigurationConstants.COMMA);
             Map<String, Object> statementParameters = (Map<String, Object>) entry.get(GraphDACParams.paramValueMap.name());
@@ -79,9 +81,13 @@ public class NodeAsyncOperations {
             }).exceptionally(error -> {
                         if (error.getCause() instanceof org.neo4j.driver.v1.exceptions.ClientException)
                             throw new ClientException(DACErrorCodeConstants.CONSTRAINT_VALIDATION_FAILED.name(), DACErrorMessageConstants.CONSTRAINT_VALIDATION_FAILED + node.getIdentifier());
-                        else
+                        else {
+                            System.out.println("Error while creating node object ::::: "+ error.getCause());
+                            error.printStackTrace();
                             throw new ServerException(DACErrorCodeConstants.SERVER_ERROR.name(),
                                     "Error! Something went wrong while creating node object. ", error.getCause());
+                        }
+
             });
             return FutureConverters.toScala(cs);
         } catch (Throwable e) {
