@@ -45,4 +45,27 @@ class TestSchemaValidator extends BaseSpec {
       assert(null != node)
     }
     }
-  }}
+  }
+
+
+  "check schemaValidate api for category" should "return true" in {
+    val definition = DefinitionFactory.getDefinition("domain", "category", "1.0")
+    val metaData = new util.HashMap[String, AnyRef](){{
+      put("name","Test Category")
+      put("identifier", "cat-test-1")
+      put("status", "Live")
+      put("objectTypes", "Test")
+    }}
+
+    val node: Node = new Node("cat-test-1", "DATA_NODE", "Category");
+    node.setGraphId("domain")
+    node.setMetadata(metaData)
+
+    val future: Future[Node] = definition.validate(node, "create")
+    future map { node => {
+      println("node metadata ::: "+node.getMetadata)
+      assert(null != node)
+    }
+    }
+  }
+}

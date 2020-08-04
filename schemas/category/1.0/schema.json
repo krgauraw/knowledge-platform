@@ -25,9 +25,43 @@
         "identifier": {
             "type": "string"
         },
-        "trackable": {
-            "type": "boolean",
-            "default": false
+        "objectTypes": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": ["Content", "Collection","Framework"]
+            },
+            "default": ["Content"]
+        },
+        "objectMetadata":{
+            "type": "object",
+            "required": [
+                "trackable",
+                "limit",
+                "test_prop_1"
+            ],
+            "properties": {
+                "trackable": {
+                    "type": "string",
+                    "enum": ["Yes","No"],
+                    "default": "No"
+                },
+                "test_prop_1": {
+                    "type": "string",
+                    "enum": ["Hello","Hi"]
+                },
+                "limit": {
+                    "type": "number",
+                    "default": 0
+                },
+                "tracable_start_date": {
+                    "type": "string"
+                },
+                "tracable_end_date": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false
         }
     },
     "additionalProperties": true
