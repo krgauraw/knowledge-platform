@@ -1085,6 +1085,111 @@
     },
     "courseId": {
       "type": "string"
+    },
+    "frameworkId" : {
+      "type": "string"
+    },
+    "boardIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "gradeLevelIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "subjectIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "mediumIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "topicsIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "targetFrameworkIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "targetBoardIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "targetGradeLevelIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "targetSubjectIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "targetMediumIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "targetTopicIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "se_framework": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "se_board": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "se_subject": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "se_medium": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "se_gradeLevel": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "se_topics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   }
 }
