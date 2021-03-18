@@ -60,7 +60,8 @@ object ImportManager {
 				val source: String = content.getOrDefault(ImportConstants.SOURCE, "").toString
 				val stage: String = content.getOrDefault(ImportConstants.STAGE, "").toString
 				val reqMetadata: util.Map[String, AnyRef] = content.getOrDefault(ImportConstants.METADATA, new util.HashMap[String, AnyRef]()).asInstanceOf[util.Map[String, AnyRef]]
-				val sourceMetadata: util.Map[String, AnyRef] = getMetadata(source)
+				//TODO: Replace Hardcoded objectType
+				val sourceMetadata: util.Map[String, AnyRef] = getMetadata(source, "Content")
 				val finalMetadata: util.Map[String, AnyRef] = if (MapUtils.isNotEmpty(sourceMetadata)) {
 					sourceMetadata.putAll(reqMetadata)
 					sourceMetadata.put(ImportConstants.SOURCE, source)
@@ -92,17 +93,19 @@ object ImportManager {
 		}
 	}
 
-	def getMetadata(source: String)(implicit oec: OntologyEngineContext, ec: ExecutionContext): util.Map[String, AnyRef] = {
+	def getMetadata(source: String, objType: String)(implicit oec: OntologyEngineContext, ec: ExecutionContext): util.Map[String, AnyRef] = {
 		if (StringUtils.isNotBlank(source)) {
 			val response: Response = oec.httpUtil.get(source, "", new util.HashMap[String, String]())
 			if (null != response && response.getResponseCode.code() == 200)
-				response.getResult.getOrDefault(ImportConstants.CONTENT, new util.HashMap[String, AnyRef]()).asInstanceOf[util.Map[String, AnyRef]]
+				response.getResult.getOrDefault(objType.toLowerCase(), new util.HashMap[String, AnyRef]()).asInstanceOf[util.Map[String, AnyRef]]
 			else throw new ClientException(ImportErrors.ERR_READ_SOURCE, ImportErrors.ERR_READ_SOURCE_MSG + response.getResponseCode)
 		} else new util.HashMap[String, AnyRef]()
 	}
 
 	def validateMetadata(metadata: util.Map[String, AnyRef]): Boolean = {
-		val reqFields = REQUIRED_PROPS.asScala.filter(x => null == metadata.get(x)).toList
+		val objType = metadata.getOrDefault("objectType", "").asInstanceOf[String]
+		val reqProps: List[String] = if(StringUtils.equals("Content", objType)) REQUIRED_PROPS.asScala.toList else REQUIRED_PROPS.asScala.filter(p => StringUtils.equals("artifactUrl", p)).toList
+		val reqFields = reqProps.filter(x => null == metadata.get(x)).toList
 		reqFields.isEmpty
 	}
 
