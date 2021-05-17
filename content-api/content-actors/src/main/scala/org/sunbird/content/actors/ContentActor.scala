@@ -47,6 +47,7 @@ class ContentActor @Inject() (implicit oec: OntologyEngineContext, ss: StorageSe
 			case "acceptFlag" => acceptFlag(request)
 			case "linkDIALCode" => linkDIALCode(request)
 			case "importContent" => importContent(request)
+			case "reviewContent" => reviewContent(request)
 			case _ => ERROR(request.getOperation)
 		}
 	}
@@ -142,6 +143,8 @@ class ContentActor @Inject() (implicit oec: OntologyEngineContext, ss: StorageSe
 	def linkDIALCode(request: Request): Future[Response] = DIALManager.link(request)
 
 	def importContent(request: Request): Future[Response] = importMgr.importObject(request)
+
+	def reviewContent(request: Request): Future[Response] = ???
 
 	def populateDefaultersForCreation(request: Request) = {
 		setDefaultsBasedOnMimeType(request, ContentParams.create.name)
